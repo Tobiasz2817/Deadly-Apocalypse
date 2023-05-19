@@ -137,12 +137,10 @@ namespace ConnectionServices
             try {
                 var allocation = await RelayService.Instance.JoinAllocationAsync(joinCode);
 
-                Debug.Log("START JOIN CONNECT");
                 NetworkManager.Singleton.GetComponent<UnityTransport>().SetClientRelayData(allocation.RelayServer.IpV4,
                     (ushort)allocation.RelayServer.Port, allocation.AllocationIdBytes, allocation.Key,
                     allocation.ConnectionData, allocation.HostConnectionData);
                 NetworkManager.Singleton.StartClient();
-                Debug.Log("Start as client");
             }
             catch (RelayServiceException e) {
                 Debug.Log(e);

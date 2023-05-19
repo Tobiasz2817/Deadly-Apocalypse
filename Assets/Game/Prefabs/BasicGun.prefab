@@ -159,7 +159,7 @@ GameObject:
   - component: {fileID: 1944017323591993676}
   - component: {fileID: 2133736333528539674}
   - component: {fileID: 1871909498151257414}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: BasicGun
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -199,11 +199,12 @@ MonoBehaviour:
   TypeVisibler: 0
   ownerTypeVisibler: 0
   speedBullet: 1200
-  bullet: {fileID: 7624896995864265741, guid: 300ba339992485a498d77a00e15c5fb1, type: 3}
   shootPoint: {fileID: 1218886043382673471}
   lookAtPoint: {fileID: 27013047428222271}
   shootDelay: 0.1
+  damage: 5
   shootType: 1
+  bullet: {fileID: 7624896995864265741, guid: 300ba339992485a498d77a00e15c5fb1, type: 3}
   gunCollider: {fileID: 1871909498151257414}
 --- !u!61 &1871909498151257414
 BoxCollider2D:

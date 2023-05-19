@@ -160,6 +160,7 @@ public class SinglePoller : Singleton<SinglePoller>
 public enum Owner
 {
     Null,
+    Everyone,
     AI,
     Player,
     Player_1,

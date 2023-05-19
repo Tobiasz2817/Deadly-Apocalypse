@@ -29,7 +29,7 @@ public class PlayerSpawn : NetworkBehaviour
     }
 
     private void SpawnPlayer(ulong clientId) {
-         var player = characterNetworkSpawner.Spawn(prefab,spawnPoints[(int)clientId].position,Quaternion.identity,clientId,true,true);
+         var player = characterNetworkSpawner.SpawnPlayer(prefab,spawnPoints[(int)clientId].position,Quaternion.identity,clientId,true);
          OnPlayerSpawn?.Invoke(player);
     }
 

@@ -2,13 +2,12 @@ using UnityEngine;
 
 public class FrozenGun : Gun
 {
-    protected override void Fire(Vector2 direction) {
-        var dir = -shootPoint.right;
-        
-        var bullet =  (Bullet)SinglePoller.Instance.GetObject(OwnerType,ObjectPollTypes.GunBullets);
-        bullet.RotateTo(direction);
-        bullet.transform.position = shootPoint.position;
+    protected override void Fire(ShootDependencies shootDependencies) {
+        var bullet =  (Bullet)NetworkPoller.Instance.GetObject(shootDependencies.ownerShootKey,ObjectPollTypes.GunBullets);
+        bullet.SetShootDependencies(shootDependencies);
+        bullet.RotateTo();
+        bullet.transform.position = shootDependencies.shootPoint;
         bullet.gameObject.SetActive(true);
-        bullet.MoveTowards((direction - (Vector2)shootPoint.position).normalized);
+        bullet.MoveTowards((shootDependencies.direction - (Vector2)shootPoint.position).normalized);
     }
 }

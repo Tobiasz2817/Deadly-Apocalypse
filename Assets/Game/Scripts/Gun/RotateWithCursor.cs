@@ -1,10 +1,7 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
-public class RotateWithCursor : MonoBehaviour
+public class RotateWithCursor : NetworkBehaviour
 {
     [SerializeField] private float minDistance = 0.25f;
     [SerializeField] private float offset = 180f;
@@ -47,6 +44,7 @@ public class RotateWithCursor : MonoBehaviour
 
     public void SetTargetPoint(Gun gun) {
         this.targetPoint = gun.GetLookAtPoint();
-        this.enabled = true;
+        if(IsOwner)
+            this.enabled = true;
     }
 }
