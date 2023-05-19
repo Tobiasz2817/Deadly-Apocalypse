@@ -1,8 +1,8 @@
-using System;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class PickUpGun : MonoBehaviour
+public class PickUpGun : NetworkBehaviour
 {
     [SerializeField] private LayerMask pickUpLayerMask;
     [SerializeField] private float range;
@@ -14,16 +14,39 @@ public class PickUpGun : MonoBehaviour
     public UnityEvent OnEnterSwampGun;
     
     private void OnEnable() {
-        playerInput.OnPickUpButtonPressed += HandlingGunAction;
+        playerInput.OnPickUpButtonPressed += CheckPickUp;
     }
 
     private void OnDisable() {
-        playerInput.OnPickUpButtonPressed -= HandlingGunAction;
+        playerInput.OnPickUpButtonPressed -= CheckPickUp;
     }
     
-    private void HandlingGunAction() {
+    private void CheckPickUp() {
         var gun = GetOverlap<Gun>();
-        if (gun) OnEnterPickUpGun?.Invoke(gun);
+        if (!gun) {
+            HandlingGunActionServerRpc(true,Owner.Everyone,0);
+            HandlingGunAction(true,Owner.Everyone,0);
+        }
+        else {
+            HandlingGunActionServerRpc(false,Owner.Everyone,gun.objectId);
+            HandlingGunAction(false,Owner.Everyone,gun.objectId);
+        }
+    }
+    
+    [ServerRpc(RequireOwnership = false)]
+    private void HandlingGunActionServerRpc(bool swampGun, Owner ownerType, int gunId) {
+        HandlingGunActionClientRpc(swampGun,ownerType,gunId);
+    }
+    
+    [ClientRpc]
+    private void HandlingGunActionClientRpc(bool swampGun, Owner ownerType, int gunId) {
+        if (IsOwner) return;
+        HandlingGunAction(swampGun,ownerType,gunId);
+    }
+    
+    private void HandlingGunAction(bool swampGun, Owner ownerType, int gunId) {
+        var gun = (Gun)NetworkPoller.Instance.GetActiveObject(ownerType, ObjectPollTypes.Guns, gunId);
+        if (!swampGun) OnEnterPickUpGun?.Invoke(gun);
         else OnEnterSwampGun?.Invoke();
     }
 
@@ -32,21 +55,3 @@ public class PickUpGun : MonoBehaviour
         return colliders == null ? null : colliders.GetComponent<T>();
     }
 }
-/*public UnityEvent<Gun> OnEnterPickUpGun;
-public UnityEvent OnStayPickUpGun;
-public UnityEvent<Gun> OnExitPickUpGun;
-
-public void OnTriggerEnter2D(Collider2D other) {
-    if (other.TryGetComponent(out Gun gun)) 
-        OnEnterPickUpGun?.Invoke(gun);
-}
-
-private void OnTriggerStay(Collider other) {
-    OnStayPickUpGun?.Invoke();
-}
-
-
-public void OnTriggerExit2D(Collider2D other) {
-    if (other.TryGetComponent(out Gun gun)) 
-        OnExitPickUpGun?.Invoke(gun);
-}*/

@@ -1,11 +1,9 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.InputSystem;
 
-public class WeaponHandler : MonoBehaviour
+public class WeaponHandler : NetworkBehaviour
 {
     [SerializeField] private Transform pickUpGunParent;
     [SerializeField] private Transform gunOffsetTransform;
@@ -64,16 +62,22 @@ public class WeaponHandler : MonoBehaviour
         SetGunParent(guns[currentIndex]);
         SetGunPosition(guns[currentIndex]);
         TurnOnGunState(guns[currentIndex], true);
+        BulletReversion(guns[currentIndex]);
         SetIndex(currentIndex);
     }
 
+    private void BulletReversion(Gun gun) {
+        var ownerKey = NetworkPoller.Instance.GetOwnerByPlayerKey(OwnerClientId, new[] { Owner.Player_1,Owner.Player_2,Owner.Player_3,Owner.Player_4 });
+        gun.ReversBullets(ownerKey);
+    }
+    
     private void SetIndex(int index) {
         this.currentIndex = index;
     }
     
     public void TryUnEquipGun(Gun gun) {
         if (gun == null) return;
-        SinglePoller.Instance.PollObject(gun.OwnerType,gun.Type,gun.objectId);
+        NetworkPoller.Instance.PollObject(gun.OwnerType,gun.Type,gun.objectId);
         ChangeGunColliderState(gun, true);
     }
 

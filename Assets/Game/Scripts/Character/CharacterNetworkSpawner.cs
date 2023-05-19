@@ -24,4 +24,15 @@ public class CharacterNetworkSpawner : MonoBehaviour
         
         return networkObject;
     }
+    
+    public NetworkObject SpawnPlayer(GameObject characterPrefab,Vector3 position,Quaternion rotation,ulong clientId, bool destroyWithScene) {
+        var obj_ = Instantiate(characterPrefab,position, rotation);
+        
+        if (obj_.TryGetComponent(out NetworkObject networkObject))
+            networkObject.SpawnAsPlayerObject(clientId,destroyWithScene);
+        else
+            throw new Exception("Prefab must have NetworkObject");
+        
+        return networkObject;
+    }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
@@ -13,28 +14,16 @@ public class NetworkPoller : SingletonNetwork<NetworkPoller>
 
     //public event Action OnPollerInstances; 
 
-    public Owner OwnerBy { private set; get; }
+    [field: SerializeField] public Owner OwnerBy { private set; get; }
+    public bool PollerCreated { private set => pollerCreated = value;  get => pollerCreated; }
+    public bool pollerCreated = false;
 
     public override void Awake() {
         base.Awake();
         InitPoller();
+        PollerCreated = true;
     }
 
-    public override void OnNetworkSpawn() {
-        OnServerRpc();
-        Debug.Log("X");
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    private void OnServerRpc() {
-        On();
-        Debug.Log("X");
-    }
-
-    private void On() {
-        Debug.Log("ON");
-    }
-    
 
     #region Init Poller
 
@@ -59,30 +48,27 @@ public class NetworkPoller : SingletonNetwork<NetworkPoller>
     
     public Owner InitPollerFromExistPollerData(NetworkObjectReference owner,ulong myKey,Owner ownerKey,params Owner[] setPossiblyKeyFrom) {
         var pollersData = GetComponents<PollerData>();
-        var newKey = GetPossiblyFrom(myKey,setPossiblyKeyFrom);
-        Debug.Log("Key Is Maybe Null");
+        var newKey = GetOwnerByPlayerKey(myKey,setPossiblyKeyFrom);
         if (newKey == Owner.Null) return newKey;
+        if (objectsToPoll.ContainsKey(newKey)) return newKey;
         
-        Debug.Log("Before Explore pollersData");
         foreach (var pollerData in pollersData) {
             if (ownerKey != pollerData.owner) continue;
-            Debug.Log("Settings Key");
 
             pollerData.owner = newKey;
             if (owner.TryGet(out NetworkObject networkObject)) {
                 CreatePollObjects(pollerData,networkObject.transform);
                 if (networkObject.IsOwner)
                     OwnerBy = newKey;
-                
-                Debug.Log("Creating Poll Objects");
             }
+            pollerData.owner = ownerKey;
         }
         
         return newKey;
     }
     
     // Safe Network Feature
-    private Owner GetPossiblyFrom(ulong myKey,Owner[] keys) {
+    public Owner GetOwnerByPlayerKey(ulong myKey,Owner[] keys) {
         for (int i = 0; i < keys.Length; i++) 
             if (myKey == (ulong)i)
                 return keys[i];
@@ -94,7 +80,7 @@ public class NetworkPoller : SingletonNetwork<NetworkPoller>
 
     public Owner InitPollerFromExistPollerData(Transform owner, ObjectPollTypes objectPollTypes,Owner ownerKey,params Owner[] setPossiblyKeyFrom) {
         var pollersData = GetComponents<PollerData>();
-        var newKey = GetPossiblyFrom(setPossiblyKeyFrom);
+        var newKey = GetOwnerByEmptyPlace(setPossiblyKeyFrom);
         if (newKey == Owner.Null) return newKey;
         
         foreach (var pollerData in pollersData) {
@@ -103,6 +89,7 @@ public class NetworkPoller : SingletonNetwork<NetworkPoller>
             
             pollerData.owner = newKey;
             CreatePollObjects(pollerData,owner);
+            pollerData.owner = ownerKey;
 
             return newKey;
         }
@@ -112,7 +99,7 @@ public class NetworkPoller : SingletonNetwork<NetworkPoller>
     
     public Owner InitPollerFromExistPollerData(Transform owner,Owner ownerKey,params Owner[] setPossiblyKeyFrom) {
         var pollersData = GetComponents<PollerData>();
-        var newKey = GetPossiblyFrom(setPossiblyKeyFrom);
+        var newKey = GetOwnerByEmptyPlace(setPossiblyKeyFrom);
         if (newKey == Owner.Null) return newKey;
         
         foreach (var pollerData in pollersData) {
@@ -125,13 +112,32 @@ public class NetworkPoller : SingletonNetwork<NetworkPoller>
         return newKey;
     }
     
-    private Owner GetPossiblyFrom(Owner[] keys) {
+    private Owner GetOwnerByEmptyPlace(Owner[] keys) {
         foreach (var key in keys) {
             if (!objectsToPoll.ContainsKey(key))
                 return key;
         }
 
         return Owner.Null;
+    }
+    
+    [ClientRpc]
+    public void RemoveKeyClientRpc(Owner owner, float timeToRemove) {
+        RemoveKey(owner, timeToRemove);
+    }
+    
+    public void RemoveKey(Owner owner, float timeToRemove) {
+        StartCoroutine(RemoveAfterTime(owner,timeToRemove));
+    }
+
+    private IEnumerator RemoveAfterTime(Owner owner, float timeToRemove) {
+        yield return new WaitForSeconds(timeToRemove);
+        foreach (var values in objectsToPoll[owner]) 
+            values.Value.DestroyObjects();
+        
+
+        Destroy(placeHolders[owner].gameObject);
+        placeHolders.Remove(owner);
     }
 
     #endregion
@@ -180,6 +186,8 @@ public class NetworkPoller : SingletonNetwork<NetworkPoller>
         var polledObject = objectsToPoll[ownerType][typeObject].GetUnActiveObject();
         return polledObject;
     }
+    
+    
 
     public PolledObject[] GetObjects (Owner ownerType, ObjectPollTypes typeObject,int objectsCount) {
         var polledObjects = objectsToPoll[ownerType][typeObject].GetUnActiveObjects(objectsCount);
@@ -214,6 +222,10 @@ public class NetworkPoller : SingletonNetwork<NetworkPoller>
         return (T)objectsToPoll[ownerType][typeObject].GetUnActiveObject(typeof(T));
     }
     public T[] GetObjectsByGenericType<T> (Owner ownerType, ObjectPollTypes typeObject,int count) where T : PolledObject {
+        return (T[])objectsToPoll[ownerType][typeObject].GetUnActiveObjects(typeof(T),count);
+    }
+    
+    public T[] GetActiveObjectsByGenericType<T> (Owner ownerType, ObjectPollTypes typeObject,int count) where T : PolledObject {
         return (T[])objectsToPoll[ownerType][typeObject].GetUnActiveObjects(typeof(T),count);
     }
     
@@ -273,7 +285,6 @@ public class NetworkPoller : SingletonNetwork<NetworkPoller>
         if (objectsToPoll.ContainsKey(ownerType)) {
             if (objectsToPoll[ownerType].ContainsKey(pollTypes)) {
                 objectsToPoll[ownerType][pollTypes].ReverseOnNewObject(type);
-                Debug.Log("Reversing");
             }
         }
     }

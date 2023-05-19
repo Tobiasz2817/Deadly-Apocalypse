@@ -242,6 +242,7 @@ public class PollerPlaceHolder : MonoBehaviour
     }
     
     public void ReverseOnNewObject(Type type) {
+        if (objects.Count <= 0) return; 
         ReChangeReferencesList(GetIndexPrefab(type));
         
         StartCoroutine(DestroyReversedObjects(reverseDestroyTime));
@@ -250,11 +251,13 @@ public class PollerPlaceHolder : MonoBehaviour
     private void ReChangeReferencesList(int newObjectIndex) {
         var currentLength = objects.Count;
         var lastLength = currentLength + pollerData.count;
+        var ownerKey = objects[0].OwnerType;
         for (int i = objects.Count; i < lastLength; i++) {
             var spawnedObject = Instantiate(pollerData.GetPolledObject(newObjectIndex), transform);
             SetPosition(spawnedObject);
             ResetRigidbody(spawnedObject);
             ActiveObject(spawnedObject,false);
+            SetOwners(spawnedObject, ownerKey);
             objects.Add(spawnedObject);
 
             var first = objects[i - currentLength];
@@ -271,19 +274,29 @@ public class PollerPlaceHolder : MonoBehaviour
     private IEnumerator DestroyReversedObjects(float time = 0f) {
         yield return new WaitForSeconds(time);
         
-        DestroyObjects(pollerData.count, pollerData.count * 2);
+        DestroyObjectsInRange(pollerData.count, pollerData.count * 2);
         objects.RemoveRange(pollerData.count, pollerData.count);
         MoveRightObjectsIds(pollerData.count,objects.Count);
     }
 
+    private void SetOwners(PolledObject polledObject, Owner owner) {
+        polledObject.OwnerType = owner;
+    }
+    
     private void MoveRightObjectsIds(int startRange, int endRange) {
         for (int i = startRange; i < endRange; i++)
             SetIdObject(objects[i],i);
     }
-    private void DestroyObjects(int startRange, int endRange) {
+    private void DestroyObjectsInRange(int startRange, int endRange) {
         for (int i = startRange; i < endRange; i++)
             Destroy(objects[i].gameObject);
     }
 
+    public void DestroyObjects() {
+        foreach (var object_ in objects) {
+            Destroy(object_.gameObject);
+        }
+    }
+    
     #endregion
 }
