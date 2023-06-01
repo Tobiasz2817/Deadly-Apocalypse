@@ -232,7 +232,7 @@ public partial class @Inputs : IInputActionCollection2, IDisposable
                     ""name"": """",
                     ""id"": ""a3d598ea-bcc4-465f-9181-d5fbdfda1ba1"",
                     ""path"": ""<Mouse>/leftButton"",
-                    ""interactions"": ""AutoFire"",
+                    ""interactions"": ""AutoFire,Press(pressPoint=0.01)"",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Automatic"",

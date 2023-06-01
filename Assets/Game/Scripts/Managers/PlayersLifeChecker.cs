@@ -1,27 +1,21 @@
 using System.Collections.Generic;
 using Unity.Netcode;
+using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.SceneManagement;
 
-public class PlayersLifeChecker : NetworkBehaviour
+public class PlayersLifeChecker : NetworkBehaviour, ClientSpawnReceiver
 {
     public UnityEvent<ulong> OnLastSurvivor;
     private Dictionary<ulong,bool> isAlivePlayers = new Dictionary<ulong, bool>();
-
-    public override void OnNetworkSpawn() {
-        if (!IsServer) return;
-        NetworkManager.Singleton.SceneManager.OnLoadComplete += OnLoadPlayer;
-    }
     
-    public override void OnNetworkDespawn() {
-        if (!NetworkManager.Singleton) return;
-        NetworkManager.Singleton.SceneManager.OnLoadComplete -= OnLoadPlayer;
-    }
-
-    private void OnLoadPlayer(ulong clientId, string sceneName, LoadSceneMode loadSceneMode) {
-        if (isAlivePlayers.ContainsKey(clientId)) return;
+    
+    private void OnLoadPlayer(NetworkObject client) {
+        if (isAlivePlayers.ContainsKey(client.OwnerClientId)) return;
         
-        isAlivePlayers.Add(clientId,false);
+        if (client.TryGetComponent(out CharacterDeathListener deathListener)) 
+            deathListener.OnPlayerDeath.AddListener(PlayerDeath);
+        
+        isAlivePlayers.Add(client.OwnerClientId,false);
     }
 
     public void PlayerDeath(ulong deathIndex) {
@@ -61,4 +55,21 @@ public class PlayersLifeChecker : NetworkBehaviour
 
         return 99;
     }
+
+    [field:SerializeField] public int priority { get; set; }
+    public void SpawnedClient(NetworkObject client) {
+        OnLoadPlayer(client);
+    }
 }
+
+public interface ClientSpawnReceiver
+{
+    void SpawnedClient(NetworkObject client);
+    int priority { set; get; }
+}
+
+public interface ClientDespawnReceiver
+{
+    void SpawnedClient(NetworkObject disconnectedClient);
+}
+

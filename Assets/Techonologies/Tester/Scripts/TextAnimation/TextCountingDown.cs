@@ -5,7 +5,6 @@ using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.UIElements;
 
 namespace SceneAnimation
 {
@@ -36,7 +35,13 @@ namespace SceneAnimation
                 textCounting.text = "Starting in " + i;
                 yield return new WaitForSeconds(1f);
             }
+            
+            yield return canvasGroup.DOFade(0, 2f);
             countDownEvent?.Invoke();
+        }
+
+        public CountDownEvent GetInvokers() {
+            return countDownEvent;
         }
     }
 }
