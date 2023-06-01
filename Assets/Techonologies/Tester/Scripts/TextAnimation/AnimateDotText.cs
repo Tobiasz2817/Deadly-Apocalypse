@@ -8,9 +8,11 @@ namespace SceneAnimation
     {
         [SerializeField] private int lengthLoadingDot = 3;
         [SerializeField] private TMP_Text loadingText;
+
+        [SerializeField] private bool animOnStart = false;
         
         private void OnEnable() {
-            StartCoroutine(LoadingText());
+            if(animOnStart) StartCoroutine(LoadingText());
         }
 
         private void OnDisable() {
