@@ -1,17 +1,17 @@
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class PvpRoundManager : NetworkBehaviour, ClientSpawnReceiver
+public class PvpRoundManager : NetworkBehaviour
 {
     public UnityEvent OnRoundRestart;
     public UnityEvent OnRoundRestartAll;
     public UnityEvent OnRoundStart;
-    private List<NetworkObject> players = new List<NetworkObject>();
-
 
     [SerializeField] private PvpRoundInterface pvpRoundInterface;
+    [SerializeField] private PlayersReferenceData playersReferenceData;
     
     public override void OnNetworkSpawn() {
         pvpRoundInterface.GetCountEndInvokers().AddListener(StartRound);
@@ -19,14 +19,11 @@ public class PvpRoundManager : NetworkBehaviour, ClientSpawnReceiver
     
     public override void OnNetworkDespawn() {
         pvpRoundInterface.GetCountEndInvokers().RemoveListener(StartRound);
-    }
+    } 
 
-    private void OnLoadPlayer(NetworkObject client) {
-        players.Add(client);
-
-        if (players.Count == 2) {
-            //RestartRound();
-        }
+    public void ClientsSpawn() {
+        if(playersReferenceData.GetKeys().Count() == 2)
+            RestartRound();
     }
     
     private void RestartRound() { 
@@ -43,12 +40,8 @@ public class PvpRoundManager : NetworkBehaviour, ClientSpawnReceiver
     }
 
     private void StartRound() {
+        if (!IsServer) return;
         OnRoundStart?.Invoke();
-    }
-    
-    [field:SerializeField] public int priority { get; set; }
-    public void SpawnedClient(NetworkObject client) {
-        OnLoadPlayer(client);
     }
 }
 

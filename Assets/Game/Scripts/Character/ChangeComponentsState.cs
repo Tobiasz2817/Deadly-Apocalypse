@@ -1,42 +1,21 @@
-using System.Collections;
-using System.Collections.Generic;
+using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 
-public class ChangeComponentsState : NetworkBehaviour, ClientSpawnReceiver
+public class ChangeComponentsState : NetworkBehaviour
 {
-    private Dictionary<ulong, CharacterComponentsState> players = new Dictionary<ulong, CharacterComponentsState>();
-
-    private NetworkObjectReference componentsState;
-
-
-    private IEnumerator WiatForPlayer() {
-        NetworkObject obj;
-        do {
-            obj = NetworkManager.Singleton.SpawnManager.GetLocalPlayerObject();
-            yield return new WaitForSeconds(0.1f);
-        } while (obj == null);
+    [SerializeField]
+    private PlayersReferenceData playersReferenceData;
+    
+    public void ChangeStates(bool state) {
+        ChangeStatesClientRpc(playersReferenceData.GetValues().ToArray(), state);
     }
-
-    public void ChangesCharacterStates(bool state) {
-
-        var player = NetworkManager.Singleton.SpawnManager.GetLocalPlayerObject();
-        if (player.TryGetComponent(out CharacterComponentsState characterComponentsState)) {
+    
+    [ClientRpc]
+    public void ChangeStatesClientRpc(NetworkObjectReference[] players ,bool state) {
+        var localPlayer = NetworkManager.Singleton.SpawnManager.GetLocalPlayerObject();
+        if (localPlayer.TryGetComponent(out CharacterComponentsState characterComponentsState)) {
             characterComponentsState.SetStateComponents(state);
         }
-
-        /*foreach (var player in players) {
-            player.Value.SetStateComponents(state);
-        }*/
-    }
-
-    private void AddPlayer(NetworkObject client) {
-        players.TryAdd(client.OwnerClientId, client.GetComponent<CharacterComponentsState>());
-    }
-
-    [field:SerializeField] public int priority { get; set; }
-    public void SpawnedClient(NetworkObject client) {
-        Debug.Log("AddClient");
-        AddPlayer(client);
     }
 }

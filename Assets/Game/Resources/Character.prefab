@@ -757,6 +757,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3796848075801145794}
+  - component: {fileID: -2571813469730380091}
+  - component: {fileID: 7938565093630417215}
+  - component: {fileID: 7062031422922165478}
   - component: {fileID: 3796848075801145814}
   - component: {fileID: 3796848075801145795}
   - component: {fileID: 3796848075801145793}
@@ -767,21 +770,20 @@ GameObject:
   - component: {fileID: 3796848075801145816}
   - component: {fileID: 3796848075801145819}
   - component: {fileID: 3796848075801145815}
-  - component: {fileID: -2571813469730380091}
   - component: {fileID: 9118530680068336128}
-  - component: {fileID: 7938565093630417215}
-  - component: {fileID: 7062031422922165478}
   - component: {fileID: 358301847604334895}
   - component: {fileID: 1585520181}
   - component: {fileID: 1585520182}
   - component: {fileID: 4481252219173733120}
+  - component: {fileID: 6247746003779312337}
+  - component: {fileID: 3256405387510295215}
   m_Layer: 0
   m_Name: Character
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &3796848075801145794
 Transform:
   m_ObjectHideFlags: 0
@@ -800,6 +802,132 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-2571813469730380091
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3796848075801145797}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 951099334
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+--- !u!114 &7938565093630417215
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3796848075801145797}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cca18b1aff5bb3e498b69d39cea4db5d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interpolationBackTime: 0.1
+  extrapolationMode: 1
+  useExtrapolationTimeLimit: 1
+  extrapolationTimeLimit: 5
+  useExtrapolationDistanceLimit: 0
+  extrapolationDistanceLimit: 20
+  sendPositionThreshold: 0
+  sendRotationThreshold: 0
+  sendScaleThreshold: 0
+  sendVelocityThreshold: 0
+  sendAngularVelocityThreshold: 0
+  receivedPositionThreshold: 0
+  receivedRotationThreshold: 0
+  snapPositionThreshold: 0
+  snapRotationThreshold: 0
+  snapScaleThreshold: 0
+  positionLerpSpeed: 0.85
+  rotationLerpSpeed: 0.85
+  scaleLerpSpeed: 0.85
+  timeCorrectionSpeed: 0.1
+  snapTimeThreshold: 3
+  syncPosition: 0
+  syncRotation: 7
+  syncScale: 7
+  syncVelocity: 7
+  syncAngularVelocity: 7
+  isPositionCompressed: 0
+  isRotationCompressed: 0
+  isScaleCompressed: 0
+  isVelocityCompressed: 0
+  isAngularVelocityCompressed: 0
+  automaticallyResetTime: 1
+  isSmoothingAuthorityChanges: 0
+  transformSource: 0
+  whenToUpdateTransform: 0
+  sendRate: 60
+  networkChannel: 
+  childObjectToSync: {fileID: 0}
+  setVelocityInsteadOfPositionOnNonOwners: 0
+  maxPositionDifferenceForVelocitySyncing: 10
+  useLocalTransformOnly: 0
+  ownerChangeIndicator: 1
+  receivedStatesCounter: 0
+--- !u!114 &7062031422922165478
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3796848075801145797}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cca18b1aff5bb3e498b69d39cea4db5d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interpolationBackTime: 0.1
+  extrapolationMode: 1
+  useExtrapolationTimeLimit: 1
+  extrapolationTimeLimit: 5
+  useExtrapolationDistanceLimit: 0
+  extrapolationDistanceLimit: 20
+  sendPositionThreshold: 0
+  sendRotationThreshold: 0
+  sendScaleThreshold: 0
+  sendVelocityThreshold: 0
+  sendAngularVelocityThreshold: 0
+  receivedPositionThreshold: 0
+  receivedRotationThreshold: 0
+  snapPositionThreshold: 0
+  snapRotationThreshold: 0
+  snapScaleThreshold: 0
+  positionLerpSpeed: 0.85
+  rotationLerpSpeed: 0.85
+  scaleLerpSpeed: 0.85
+  timeCorrectionSpeed: 0.1
+  snapTimeThreshold: 3
+  syncPosition: 7
+  syncRotation: 6
+  syncScale: 7
+  syncVelocity: 7
+  syncAngularVelocity: 7
+  isPositionCompressed: 0
+  isRotationCompressed: 0
+  isScaleCompressed: 0
+  isVelocityCompressed: 0
+  isAngularVelocityCompressed: 0
+  automaticallyResetTime: 1
+  isSmoothingAuthorityChanges: 0
+  transformSource: 0
+  whenToUpdateTransform: 1
+  sendRate: 60
+  networkChannel: 
+  childObjectToSync: {fileID: 3796848075328142971}
+  setVelocityInsteadOfPositionOnNonOwners: 0
+  maxPositionDifferenceForVelocitySyncing: 10
+  useLocalTransformOnly: 0
+  ownerChangeIndicator: 1
+  receivedStatesCounter: 0
 --- !u!114 &3796848075801145814
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -967,22 +1095,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &-2571813469730380091
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3796848075801145797}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 951099334
-  AlwaysReplicateAsRoot: 0
-  DontDestroyWithOwner: 0
-  AutoObjectParentSync: 1
 --- !u!114 &9118530680068336128
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1005,116 +1117,6 @@ MonoBehaviour:
   - {fileID: 3796848075801145793}
   - {fileID: 3796848075328142966}
   - {fileID: 625709123}
---- !u!114 &7938565093630417215
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3796848075801145797}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cca18b1aff5bb3e498b69d39cea4db5d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  interpolationBackTime: 0.1
-  extrapolationMode: 1
-  useExtrapolationTimeLimit: 1
-  extrapolationTimeLimit: 5
-  useExtrapolationDistanceLimit: 0
-  extrapolationDistanceLimit: 20
-  sendPositionThreshold: 0
-  sendRotationThreshold: 0
-  sendScaleThreshold: 0
-  sendVelocityThreshold: 0
-  sendAngularVelocityThreshold: 0
-  receivedPositionThreshold: 0
-  receivedRotationThreshold: 0
-  snapPositionThreshold: 0
-  snapRotationThreshold: 0
-  snapScaleThreshold: 0
-  positionLerpSpeed: 0.85
-  rotationLerpSpeed: 0.85
-  scaleLerpSpeed: 0.85
-  timeCorrectionSpeed: 0.1
-  snapTimeThreshold: 3
-  syncPosition: 0
-  syncRotation: 7
-  syncScale: 7
-  syncVelocity: 7
-  syncAngularVelocity: 7
-  isPositionCompressed: 0
-  isRotationCompressed: 0
-  isScaleCompressed: 0
-  isVelocityCompressed: 0
-  isAngularVelocityCompressed: 0
-  automaticallyResetTime: 1
-  isSmoothingAuthorityChanges: 0
-  transformSource: 0
-  whenToUpdateTransform: 0
-  sendRate: 60
-  networkChannel: 
-  childObjectToSync: {fileID: 0}
-  setVelocityInsteadOfPositionOnNonOwners: 0
-  maxPositionDifferenceForVelocitySyncing: 10
-  useLocalTransformOnly: 0
-  ownerChangeIndicator: 1
-  receivedStatesCounter: 0
---- !u!114 &7062031422922165478
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3796848075801145797}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cca18b1aff5bb3e498b69d39cea4db5d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  interpolationBackTime: 0.1
-  extrapolationMode: 1
-  useExtrapolationTimeLimit: 1
-  extrapolationTimeLimit: 5
-  useExtrapolationDistanceLimit: 0
-  extrapolationDistanceLimit: 20
-  sendPositionThreshold: 0
-  sendRotationThreshold: 0
-  sendScaleThreshold: 0
-  sendVelocityThreshold: 0
-  sendAngularVelocityThreshold: 0
-  receivedPositionThreshold: 0
-  receivedRotationThreshold: 0
-  snapPositionThreshold: 0
-  snapRotationThreshold: 0
-  snapScaleThreshold: 0
-  positionLerpSpeed: 0.85
-  rotationLerpSpeed: 0.85
-  scaleLerpSpeed: 0.85
-  timeCorrectionSpeed: 0.1
-  snapTimeThreshold: 3
-  syncPosition: 7
-  syncRotation: 6
-  syncScale: 7
-  syncVelocity: 7
-  syncAngularVelocity: 7
-  isPositionCompressed: 0
-  isRotationCompressed: 0
-  isScaleCompressed: 0
-  isVelocityCompressed: 0
-  isAngularVelocityCompressed: 0
-  automaticallyResetTime: 1
-  isSmoothingAuthorityChanges: 0
-  transformSource: 0
-  whenToUpdateTransform: 1
-  sendRate: 60
-  networkChannel: 
-  childObjectToSync: {fileID: 3796848075328142971}
-  setVelocityInsteadOfPositionOnNonOwners: 0
-  maxPositionDifferenceForVelocitySyncing: 10
-  useLocalTransformOnly: 0
-  ownerChangeIndicator: 1
-  receivedStatesCounter: 0
 --- !u!114 &358301847604334895
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1203,6 +1205,32 @@ MonoBehaviour:
   - {fileID: 3796848075801145816}
   - {fileID: 3796848075801145795}
   - {fileID: 3796848075801145793}
+  - {fileID: 3796848075801145818}
+--- !u!114 &6247746003779312337
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3796848075801145797}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f3946d31f5d5194493eee06d3e849f5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3256405387510295215
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3796848075801145797}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e0ab800cbbccbc449c5546bae24bc03, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weaponHandler: {fileID: 3796848075801145815}
 --- !u!1 &3796848075889491589
 GameObject:
   m_ObjectHideFlags: 0

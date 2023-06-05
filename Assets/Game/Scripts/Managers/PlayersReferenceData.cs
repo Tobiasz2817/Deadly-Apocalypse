@@ -3,22 +3,31 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
 public class PlayersReferenceData : NetworkBehaviour
 {
     private Dictionary<ulong, NetworkObjectReference> players = new Dictionary<ulong, NetworkObjectReference>();
-    
+
+    public UnityEvent OnPlayerSpawnAndConnected;
+
     public override void OnNetworkSpawn() {
-        if (!IsServer|| !NetworkManager.Singleton) return;
+        if (!IsServer || !NetworkManager.Singleton) return;
+        NetworkManager.Singleton.SceneManager.OnLoadComplete += PlayerConnected;
         NetworkManager.Singleton.OnClientDisconnectCallback += PlayerDisconnect;
     }
     
     public override void OnNetworkDespawn() {
         if (!IsServer || !NetworkManager.Singleton) return;
+        NetworkManager.Singleton.SceneManager.OnLoadComplete -= PlayerConnected;
         NetworkManager.Singleton.OnClientDisconnectCallback -= PlayerDisconnect;
     }
 
+    private void PlayerConnected(ulong clientId, string scenename, LoadSceneMode loadscenemode) {
+        StartCoroutine(WaitForPlayerReference(clientId));
+    }
+    
     private void PlayerDisconnect(ulong obj) {
         players.Remove(obj);
     }
@@ -32,9 +41,9 @@ public class PlayersReferenceData : NetworkBehaviour
         do {
             player = NetworkManager.Singleton.SpawnManager.GetPlayerNetworkObject(id);
             yield return null;
-        } while (player != null);
+        } while (player == null);
 
-        AddPlayer(player);
+        LoadPlayer(player);
     }
     
     public void LoadPlayer(NetworkObjectReference clientRef) {
@@ -54,8 +63,11 @@ public class PlayersReferenceData : NetworkBehaviour
 
     [ClientRpc]
     private void ConfigurePlayersClientRpc(NetworkObjectReference[] networkObjectsReference) {
-        if (IsServer) return;
-        ConfigurePlayers(networkObjectsReference);
+        if (!IsServer)
+            ConfigurePlayers(networkObjectsReference);
+        else 
+            OnPlayerSpawnAndConnected?.Invoke();
+        
         Debug.Log(players.Count);
     }
 
@@ -67,6 +79,18 @@ public class PlayersReferenceData : NetworkBehaviour
             players.Add(networkObjectReference.NetworkObjectId,networkObjectReference);
         }
 
-        players.OrderBy((key) => key.Key);
+        players = players.OrderBy((key) => key.Key).ToDictionary(key => key.Key, value => value.Value);
+    }
+
+    public IEnumerable<NetworkObjectReference> GetValues() {
+        foreach (var player in players.Values) {
+            yield return player;
+        }
+    }
+    
+    public IEnumerable<ulong> GetKeys() {
+        foreach (var player in players.Keys) {
+            yield return player;
+        }
     }
 }

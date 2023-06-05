@@ -18,7 +18,6 @@ public class PlayerSpawn : NetworkBehaviour
         if (!IsServer) return;
         NetworkManager.Singleton.SceneManager.OnLoadComplete += OnPlayerLoad;
     }
-    
 
     public override void OnNetworkDespawn() {
         if (!IsServer || !NetworkManager.Singleton) return;

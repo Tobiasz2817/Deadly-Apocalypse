@@ -3,19 +3,36 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class PlayersLifeChecker : NetworkBehaviour, ClientSpawnReceiver
+public class PlayersLifeChecker : NetworkBehaviour
 {
     public UnityEvent<ulong> OnLastSurvivor;
     private Dictionary<ulong,bool> isAlivePlayers = new Dictionary<ulong, bool>();
     
-    
-    private void OnLoadPlayer(NetworkObject client) {
-        if (isAlivePlayers.ContainsKey(client.OwnerClientId)) return;
+    [SerializeField]
+    private PlayersReferenceData playersReferenceData;
+
+    public override void OnNetworkSpawn() {
+        if (!IsServer) return;
+        playersReferenceData.OnPlayerSpawnAndConnected.AddListener(OnLoadPlayer);
+    }
+
+    public override void OnNetworkDespawn() {
+        if (!IsServer) return;
+        playersReferenceData.OnPlayerSpawnAndConnected.RemoveListener(OnLoadPlayer);
+    }
+
+
+    private void OnLoadPlayer() {
+        var clients = playersReferenceData.GetValues();
+        foreach (var client in clients) {
+            var clientNetworkObject = (NetworkObject)client;
+            if (isAlivePlayers.ContainsKey(clientNetworkObject.OwnerClientId)) continue;
         
-        if (client.TryGetComponent(out CharacterDeathListener deathListener)) 
-            deathListener.OnPlayerDeath.AddListener(PlayerDeath);
+            if (clientNetworkObject.TryGetComponent(out CharacterDeathListener deathListener)) 
+                deathListener.OnPlayerDeath.AddListener(PlayerDeath);
         
-        isAlivePlayers.Add(client.OwnerClientId,false);
+            isAlivePlayers.Add(clientNetworkObject.OwnerClientId,false);
+        }
     }
 
     public void PlayerDeath(ulong deathIndex) {
@@ -54,11 +71,6 @@ public class PlayersLifeChecker : NetworkBehaviour, ClientSpawnReceiver
                 return player.Key;
 
         return 99;
-    }
-
-    [field:SerializeField] public int priority { get; set; }
-    public void SpawnedClient(NetworkObject client) {
-        OnLoadPlayer(client);
     }
 }
 

@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -21,7 +20,6 @@ public class ControlPlayerPoller : NetworkBehaviour
     }
 
     private void OnConnectedPlayer(ulong obj) {
-        return;
         StartCoroutine(CreatePlayerPoll(obj));
     }
     
